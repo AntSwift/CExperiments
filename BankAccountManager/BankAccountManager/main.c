@@ -20,17 +20,50 @@ void printTitle(char* title)
 
 void openAccount(bank* internalBank) 
 {
+	int accountNumber;
+	int openBalance;
+	account* newAccount;
+
+	char* accountName[80];
+
 	printTitle("Open an account");
+
+	accountNumber = (int)malloc(sizeof(int));
+	openBalance = 0;
+
+	printf("Enter an account number:\n");
+	scanf_s ("%i", &accountNumber);
+
+	printf("Enter an account name:\n");
+	scanf_s("%s", accountName);
+
+	createAccount(internalBank, accountNumber, *accountName, 0);
 }
 
 void displayAccount(bank* internalBank) 
 {
+	int accountNumber;
+	account* foundAccount;
+
 	printTitle("Display an account");
+
+	accountNumber = (int)malloc(sizeof(int));
+
+	printf("Enter an account number:\n");
+	scanf_s ("%i", &accountNumber);
+
+	
+	foundAccount = findAccount(internalBank, accountNumber);
+
+	printAccount(foundAccount);
 }
 
 void listAccounts(bank* internalBank) 
 {
 	int idxAccount;
+	int freeCount;
+
+	freeCount = 0;
 	
 	printTitle("All Accounts");
 
@@ -38,8 +71,17 @@ void listAccounts(bank* internalBank)
 	{
 		account* currAccount = &internalBank->accounts[idxAccount];
 
-		printAccount(currAccount);
+		if(isNullAccount(currAccount) == 0)
+		{
+			printAccount(currAccount);
+		}
+		else 
+		{
+			freeCount++;
+		}
 	}
+
+	printf("%i free spaces\n", freeCount);
 }
 
 void mainMenu(bank* internalBank)
@@ -81,7 +123,7 @@ void mainMenu(bank* internalBank)
 int main()
 {
 	bank* internalBank;
-	internalBank = createBank(10);
+	internalBank = createBank(1000);
 
 	mainMenu(internalBank);
 

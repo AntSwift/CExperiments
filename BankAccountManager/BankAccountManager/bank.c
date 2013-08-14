@@ -19,12 +19,17 @@ bank* createBank(int maxAccounts)
 	return sampleBank;
 }
 
-int isNullAccount(account* compareAccount)
+account* createEmptyAccount()
 {
 	account* emptyAccount;
 	emptyAccount = (account*)calloc(1, sizeof(account));
 
-	return (compareAccount->number == emptyAccount->number && compareAccount->name == emptyAccount->name && compareAccount->balance == emptyAccount->balance);
+	return emptyAccount;
+}
+
+int isNullAccount(account* compareAccount)
+{
+	return (compareAccount->number == createEmptyAccount()->number && compareAccount->name == createEmptyAccount()->name && compareAccount->balance == createEmptyAccount()->balance);
 }
 
 int getNextSlot(bank* internalBank)
@@ -43,7 +48,7 @@ int getNextSlot(bank* internalBank)
 ///<summary>
 ///Creates an instance of account with the supplied opening balance and returns a pointer to it.
 ///</summary>
-void createAccount(bank* internalBank, int number, char* name, long openingBalance) 
+void createAccount(bank* internalBank, int accountNumber, char* name, long openingBalance) 
 {
 	int idxLocation;
 
@@ -51,7 +56,7 @@ void createAccount(bank* internalBank, int number, char* name, long openingBalan
 
 	newAccount = (account*)calloc(0, sizeof(account));
 
-	newAccount->number = number;
+	newAccount->number = accountNumber;
 	newAccount->name = name;
 	newAccount->balance = openingBalance;
 
@@ -67,4 +72,19 @@ void transfer(account* from, account* to, long amount)
 	from->balance = from->balance - amount;
 	
 	to->balance = to->balance + amount;
+}
+
+account* findAccount(bank* internalBank, int accountNumber)
+{
+	int idxAccounts;
+
+	for (idxAccounts = 0; idxAccounts < internalBank->maxAccounts; idxAccounts++)
+	{
+		if((&internalBank->accounts[idxAccounts])->number == accountNumber)
+		{
+			return &internalBank->accounts[idxAccounts];
+		}
+	}
+
+	return createEmptyAccount();
 }
